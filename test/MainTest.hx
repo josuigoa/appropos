@@ -20,7 +20,10 @@ class MainTest extends utest.Test {
     static var stringSpaces:String;
     
 	@:v('app.props.test.no.exists')
-	static var noExists:String;
+	static var notExists:String;
+    
+	@:v('app.props.test.no.exists:default value')
+	static var notExistsWithDefault:String;
     
 	@:v('app.props.test.commented')
 	static var commented:String;
@@ -31,7 +34,8 @@ class MainTest extends utest.Test {
 		Assert.equals(10, numericUInt);
 		Assert.equals("10_string", string);
 		Assert.equals("this is a test", stringSpaces);
-		Assert.isNull(noExists);
+		Assert.equals("default value", notExistsWithDefault);
+		Assert.isNull(notExists);
 		Assert.isNull(commented);
 	}
 }

@@ -12,23 +12,10 @@ class Appropos {
 	
 	static var properties:Map<String, Any>;
 	
-	static public function get(key:String) {
-		if (properties == null)
-			return null;
+	static public function get(key:String, defaultValue:Any) {
+		if (properties == null || !properties.exists(key))
+			return defaultValue;
 		return properties.get(key);
-	}
-	
-	static macro function _init(_basePackage:ExprOf<String>) {
-		var basePackage = switch _basePackage.expr {
-			case EConst(c):
-				switch c {
-					case CString(s, kind): s;
-					case _: '';
-				}
-			case _: '';
-		}
-		Compiler.addGlobalMetadata(basePackage, '@:build(appropos.Appropos.generate())');
-		return macro null;
 	}
 	
 	static public function init(basePackage:String = '') {
@@ -58,18 +45,28 @@ class Appropos {
 	#if macro
 	static public function generate() {
 		var fields = Context.getBuildFields();
-		var fgets = [], valueId, pos = Context.currentPos();
+		var fgets = [], valueId, valueKey, valueDefault, colonInd, pos = Context.currentPos();
 		for (field in fields) {
-			for (meta in field.meta) {
-				switch meta.name {
-					case ':value' | ':v':
-						switch field.kind {
-							case FVar(t, _):
+			switch field.kind {
+				case FVar(t, _):
+					for (meta in field.meta) {
+						switch meta.name {
+							case ':value' | ':v':
 								if (t == null)
 									t = macro :String;
 								valueId = extractKey(meta.params[0]);
 								if (valueId == '')
 									continue;
+								colonInd = valueId.indexOf(':');
+								if (colonInd != -1) {
+									valueKey = valueId.substring(0, colonInd);
+									valueDefault = valueId.replace(valueKey + ':', '');
+									if (valueDefault == '')
+										valueDefault = null;
+								} else {
+									valueKey = valueId;
+									valueDefault = null;
+								}
 								field.kind = FProp('get', 'never', t);
 								fgets.push({
 									name: 'get_' + field.name,
@@ -79,15 +76,13 @@ class Appropos {
 										args: [],
 										params: [],
 										ret: t,
-										expr: {expr: getReturnExpr(t, valueId), pos:pos}
+										expr: {expr: getReturnExpr(t, valueKey, valueDefault), pos:pos}
 									}),
 									access: field.access
 								});
-							case _:
+							}
 						}
-						
-	
-				}
+				case _:
 			}
 		}
 		return fields.concat(fgets);
@@ -97,38 +92,45 @@ class Appropos {
 		return switch expr.expr {
 			case EConst(c):
 				switch c {
-					case CInt(v) | CFloat(v):
-						Std.string(v);
-					case CString(s, kind):
-						s;
-					case _:
-						'';
+					case CInt(v) | CFloat(v): Std.string(v);
+					case CString(s, kind): s;
+					case _: '';
 				}
-			case _:
-				'';
+			case _: '';
 		}
 	}
 	
-	static function getReturnExpr(t:ComplexType, valueId:String) {
+	static function getReturnExpr(t:ComplexType, valueKey:String, valueDefault:String) {
 		return switch t {
 			case TPath(p):
 				switch p.name {
 					case 'Float':
-						EReturn(macro Std.parseFloat(appropos.Appropos.get($v{valueId})));
+						EReturn(macro Std.parseFloat(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
 					case 'Int' | 'UInt':
-						EReturn(macro Std.parseInt(appropos.Appropos.get($v{valueId})));
+						EReturn(macro Std.parseInt(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
 					case _:
-						EReturn(macro appropos.Appropos.get($v{valueId}));
+						EReturn(macro appropos.Appropos.get($v{valueKey}, $v{valueDefault}));
 				}
 			case TOptional(t):
-				getReturnExpr(t, valueId);
+				getReturnExpr(t, valueKey, valueDefault);
 			case TNamed(n, t):
-				getReturnExpr(t, valueId);
+				getReturnExpr(t, valueKey, valueDefault);
 			case _:
 				EReturn(macro null);
 		}
 	}
 	#end
 	
-	static function main() {}
+	static macro function _init(_basePackage:ExprOf<String>) {
+		var basePackage = switch _basePackage.expr {
+			case EConst(c):
+				switch c {
+					case CString(s, kind): s;
+					case _: '';
+				}
+			case _: '';
+		}
+		Compiler.addGlobalMetadata(basePackage, '@:build(appropos.Appropos.generate())');
+		return macro null;
+	}
 }
