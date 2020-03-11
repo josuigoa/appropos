@@ -1,6 +1,6 @@
 # Appropos
 
-Inspired by [Spring Value annotation](https://www.baeldung.com/spring-value-annotation) to get runtime values from a external properties file. By default calle `app.props`.
+Inspired by [Spring Value annotation](https://www.baeldung.com/spring-value-annotation) to get runtime values from a external properties file. By default is called `app.props`.
 
 ## Usage
 
