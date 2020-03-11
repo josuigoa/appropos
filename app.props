@@ -1,0 +1,6 @@
+app.props.test.float=10.5
+app.props.test.int=-10
+app.props.test.uint=10
+app.props.test.string=10_string
+#app.props.test.commented=value
+app.props.test.string.spaces=this is a test
