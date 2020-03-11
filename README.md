@@ -1,9 +1,9 @@
-# Haxe project
+# Appropos
 
-This is an example Haxe project scaffolded by Visual Studio Code.
+Inspired by [Spring Value annotation](https://www.baeldung.com/spring-value-annotation) to get runtime values from a external properties file. By default calle `app.props`.
 
-Without further changes the structure is following:
+## Usage
 
- * `src/Main.hx`: Entry point Haxe source file
- * `build.hxml`: Haxe command line file used to build the project
- * `README.md`: This file
+First of all, initialize the engine: `appropos.Appropos.init();`
+
+There is an example of the usage in the `test/MainTest.hx` file.

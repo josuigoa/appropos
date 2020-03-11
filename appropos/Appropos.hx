@@ -18,13 +18,13 @@ class Appropos {
 		return properties.get(key);
 	}
 	
-	static public function init(basePackage:String = '') {
+	static public function init(basePackage:String = '', filename:String = 'app.props') {
 		
 		_init(basePackage);
 		
 		try {
 			properties = new Map();
-			var props = File.getContent('app.props');
+			var props = File.getContent(filename);
 			var key, value;
 			var ereg = ~/([#\w\._-]+)?(?==)=(.+\n?)/g;
 			while (ereg.match(props)) {
