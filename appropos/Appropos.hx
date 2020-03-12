@@ -10,9 +10,9 @@ import haxe.macro.Expr;
 
 class Appropos {
 	
-	static var properties:Map<String, Any>;
+	static var properties:Map<String, String>;
 	
-	static public function get(key:String, defaultValue:Any) {
+	static public function get(key:String, defaultValue:String) {
 		if (properties == null || !properties.exists(key))
 			return defaultValue;
 		return properties.get(key);
@@ -106,6 +106,8 @@ class Appropos {
 				switch p.name {
 					case 'Float':
 						EReturn(macro Std.parseFloat(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
+					case 'Bool':
+						EReturn(macro appropos.Appropos.get($v{valueKey}, $v{valueDefault}).toLowerCase() == 'true');
 					case 'Int' | 'UInt':
 						EReturn(macro Std.parseInt(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
 					case _:
