@@ -54,7 +54,7 @@ class MainTest extends utest.Test {
 		Assert.equals("10_string", string);
 		Assert.equals("this is a test", stringSpaces);
 		
-		var expectedArray = [1, 2, 3];
+		var expectedArray = [1.32, 2.25, 3.98];
 		for (i in 0...expectedArray.length)
 			Assert.floatEquals(expectedArray[i], abstractArray[i]);
 

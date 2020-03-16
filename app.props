@@ -5,4 +5,4 @@ app.props.test.bool=true
 app.props.test.string=10_string
 #app.props.test.commented=value
 app.props.test.string.spaces=this is a test
-app.props.test.abstract=1,2,3
+app.props.test.abstract=1.32,2.25,3.98
