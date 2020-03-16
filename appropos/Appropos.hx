@@ -76,7 +76,7 @@ class Appropos {
 										args: [],
 										params: [],
 										ret: t,
-										expr: {expr: getReturnExpr(t, valueKey, valueDefault), pos:pos}
+										expr: {expr: EReturn(getReturnExpr(t, valueKey, valueDefault)), pos:pos}
 									}),
 									access: field.access
 								});
@@ -105,20 +105,20 @@ class Appropos {
 			case TPath(p):
 				switch p.name {
 					case 'Float':
-						EReturn(macro Std.parseFloat(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
+						macro Std.parseFloat(appropos.Appropos.get($v{valueKey}, $v{valueDefault}));
 					case 'Bool':
-						EReturn(macro appropos.Appropos.get($v{valueKey}, $v{valueDefault}).toLowerCase() == 'true');
+						macro appropos.Appropos.get($v{valueKey}, $v{valueDefault}).toLowerCase() == 'true';
 					case 'Int' | 'UInt':
-						EReturn(macro Std.parseInt(appropos.Appropos.get($v{valueKey}, $v{valueDefault})));
+						macro Std.parseInt(appropos.Appropos.get($v{valueKey}, $v{valueDefault}));
 					case _:
-						EReturn(macro appropos.Appropos.get($v{valueKey}, $v{valueDefault}));
+						macro appropos.Appropos.get($v{valueKey}, $v{valueDefault});
 				}
 			case TOptional(t):
 				getReturnExpr(t, valueKey, valueDefault);
 			case TNamed(n, t):
 				getReturnExpr(t, valueKey, valueDefault);
 			case _:
-				EReturn(macro null);
+				macro null;
 		}
 	}
 	#end
