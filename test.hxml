@@ -3,8 +3,6 @@
 -main TestAll
 -neko testall.n
 
---macro haxe.macro.Compiler.addGlobalMetadata('', '@:build(appropos.Appropos.generate())')
-
 --next
 
 -cmd neko testall.n

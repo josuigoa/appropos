@@ -8,6 +8,7 @@ abstract AbsArray(Array<Float>) from Array<Float> {
 		return [for (n in s.split(',')) Std.parseFloat(n)];
 }
 
+@:build(appropos.Appropos.generate())
 class MainTest extends utest.Test {
     
 	@:v('app.props.test.float')

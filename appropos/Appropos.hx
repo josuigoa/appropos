@@ -18,9 +18,7 @@ class Appropos {
 		return properties.get(key);
 	}
 	
-	static public function init(basePackage:String = '', filename:String = 'app.props') {
-		
-		_init(basePackage);
+	static public function init(filename:String = 'app.props') {
 		
 		try {
 			properties = new Map();
@@ -122,17 +120,4 @@ class Appropos {
 		}
 	}
 	#end
-	
-	static macro function _init(_basePackage:ExprOf<String>) {
-		var basePackage = switch _basePackage.expr {
-			case EConst(c):
-				switch c {
-					case CString(s, kind): s;
-					case _: '';
-				}
-			case _: '';
-		}
-		Compiler.addGlobalMetadata(basePackage, '@:build(appropos.Appropos.generate())');
-		return macro null;
-	}
 }
