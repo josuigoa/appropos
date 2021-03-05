@@ -35,8 +35,13 @@ class Appropos {
 				properties.set(key, value);
 				props = ereg.matchedRight();
 			}
+		#if (haxe_ver >= 4.1)
+		} catch (e:haxe.Exception) {
+			trace('Exception: ${e.stack}');
+		#else
 		} catch (e:Dynamic) {
-			trace('error: $e');
+			trace('Exception: $e');
+		#end
 		}
 	}
 	
