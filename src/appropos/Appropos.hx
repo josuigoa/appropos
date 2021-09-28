@@ -18,11 +18,11 @@ class Appropos {
 		return properties.get(key);
 	}
 	
-	static public function init(filename:String = 'app.props') {
+	static public function init(path:String = 'app.props') {
 		
 		try {
 			properties = new Map();
-			var props = File.getContent(filename);
+			var props = File.getContent(path);
 			var key, value;
 			var ereg = ~/([#\w\._-]+)?(?==)=(.+\n?)/g;
 			while (ereg.match(props)) {

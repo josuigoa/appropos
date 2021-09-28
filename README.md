@@ -20,7 +20,7 @@ static var default100:Float;
 
 ### More complex types
 
-The handled types by default are Float/Int/String/Bool. If you need a more complex type you can alwasy use an abstract:
+The handled types by default are Float/Int/String/Bool. If you need a more complex type you can always use an abstract:
 
 ```haxe
 @:arrayAccess
@@ -34,13 +34,13 @@ abstract AbsArray(Array<Float>) from Array<Float> {
 static var abstractArray:AbsArray; // [1.32, 2.25, 3.98]
 ```
 
-To get this running, you need to call to the build macro `@:build(appropos.Appropos.generate())` in the classes where you are using `:v` annotations. And is necessary to initialize with `appropos.Appropos.init();`
+To get this running, is necessary to initialize the library with `appropos.Appropos.init();`
 
 There is a complete example of the usage in the `test/MainTest.hx` file.
 
 ## How it works
 
-`appropos.Appropos.init();` is called to read the file content and fills a `Map<String, String>` with the keys and values from the given property file at *runtime*. This file by default is `app.props` and is in the same folder as the executable. The path of this file can be passed as parameter to de `appropos.Appropos.init();` function.
+`appropos.Appropos.init();` is called to read the file content and fills a `Map<String, String>` with the keys and values from the given property file at *runtime*. This file by default is `app.props` and is in the same folder as the executable. The path of this file can be passed as parameter to de `appropos.Appropos.init("/path/to/my_properties_file.txt");` function.
 
 A macro creates all the code needed to read the file and inject the values in properties. The created code basically is:
 
@@ -48,3 +48,7 @@ A macro creates all the code needed to read the file and inject the values in pr
 * Extract the `key`.
 * Each variable is set to [class property](https://haxe.org/manual/class-field-property.html).
 * Create a getter called `get_xxx` (where xxx is the variable name). This getter returns the value attached to the `key` in the `appropos.Appropos.properties`. The setter is disabled.
+
+## Credits
+
+Thanks to [endel](https://github.com/endel) for the [GH action to publish](https://github.com/endel/haxelib-publish-github-actions-test) the library to haxelib.
