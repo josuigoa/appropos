@@ -1,0 +1,17 @@
+{
+	"name": "appropos",
+	"url": "https://github.com/josuigoa/appropos",
+	"license": "MIT",
+	"tags": [
+		"properties",
+		"appropos"
+	],
+	"description": "Library to load properties from file in runtime.",
+	"version": "1.0.0",
+	"classPath": "src/",
+	"releasenote": "Initial release, everything is working correctly.",
+	"contributors": [
+		"josuigoa"
+	],
+	"dependencies": {}
+}
