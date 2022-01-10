@@ -1,7 +1,9 @@
 package appropos;
 
 import sys.io.File;
+
 using StringTools;
+
 #if macro
 import haxe.macro.Context;
 import haxe.macro.Compiler;
@@ -9,20 +11,26 @@ import haxe.macro.Expr;
 #end
 
 class Appropos {
-	
 	static var properties:Map<String, String>;
-	
+
 	static public function get(key:String, defaultValue:String) {
 		if (properties == null || !properties.exists(key))
 			return defaultValue;
 		return properties.get(key);
 	}
-	
-	static public function init(path:String = 'app.props') {
-		
+
+	static public function init(?filePath:String) {
+		var approposPathIndex = Sys.args().indexOf('-appropos');
+		if (approposPathIndex != -1) {
+			trace("Reading props from: " + Sys.args()[approposPathIndex + 1]);
+			filePath = Sys.args()[approposPathIndex + 1];
+		} else if (filePath == null) {
+			filePath = 'app.props';
+		}
+
 		try {
 			properties = new Map();
-			var props = File.getContent(path);
+			var props = File.getContent(filePath);
 			var key, value;
 			var ereg = ~/([#\w\._-]+)?(?==)=(.+\n?)/g;
 			while (ereg.match(props)) {
@@ -36,19 +44,26 @@ class Appropos {
 				props = ereg.matchedRight();
 			}
 		#if (haxe_ver >= 4.1)
-		} catch (e:haxe.Exception) {
+		} catch (e:haxe.Exception)
+		{
 			trace('Exception: ${e.stack}');
 		#else
-		} catch (e:Dynamic) {
+		} catch (e:Dynamic)
+		{
 			trace('Exception: $e');
 		#end
 		}
 	}
-	
+
 	#if macro
 	static public function generate() {
 		var fields = Context.getBuildFields();
-		var fgets = [], valueId, valueKey, valueDefault, colonInd, pos = Context.currentPos();
+		var fgets = [],
+			valueId,
+			valueKey,
+			valueDefault,
+			colonInd,
+			pos = Context.currentPos();
 		for (field in fields) {
 			switch field.kind {
 				case FVar(t, _):
@@ -56,7 +71,7 @@ class Appropos {
 						switch meta.name {
 							case ':value' | ':v':
 								if (t == null)
-									t = macro :String;
+									t = macro:String;
 								valueId = extractKey(meta.params[0]);
 								if (valueId == '')
 									continue;
@@ -74,23 +89,23 @@ class Appropos {
 								fgets.push({
 									name: 'get_' + field.name,
 									pos: pos,
-									meta: [{ name : ":dce", params : [], pos : pos }],
+									meta: [{name: ":dce", params: [], pos: pos}],
 									kind: FFun({
 										args: [],
 										params: [],
 										ret: t,
-										expr: {expr: EReturn(getReturnExpr(t, valueKey, valueDefault)), pos:pos}
+										expr: {expr: EReturn(getReturnExpr(t, valueKey, valueDefault)), pos: pos}
 									}),
 									access: field.access
 								});
-							}
 						}
+					}
 				case _:
 			}
 		}
 		return fields.concat(fgets);
 	}
-	
+
 	static function extractKey(expr:Expr) {
 		return switch expr.expr {
 			case EConst(c):
@@ -102,7 +117,7 @@ class Appropos {
 			case _: '';
 		}
 	}
-	
+
 	static function getReturnExpr(t:ComplexType, valueKey:String, valueDefault:String) {
 		return switch t {
 			case TPath(p):
