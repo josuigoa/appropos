@@ -7,9 +7,9 @@
 		"appropos"
 	],
 	"description": "Library to load properties from file in runtime.",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"classPath": "src/",
-	"releasenote": "Read file path from arguments.",
+	"releasenote": "Enable updating the properties.",
 	"contributors": [
 		"josuigoa"
 	],
